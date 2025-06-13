@@ -3,402 +3,1294 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador de Vendas e Comissões - Ateliê Rede</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>CMR - Cerâmica Monte Real 2025</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             color: #333;
-            padding-top: 20px;
+            line-height: 1.5;
+            font-size: 14px;
         }
+
         .container {
-            max-width: 1300px;
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
         }
-        h1, h2 {
-            color: #1a5276;
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .partner-level {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+            border: 2px solid #ff6b35;
+        }
+
+        .partner-level h3 {
+            color: #ff6b35;
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .partner-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .partner-btn {
+            padding: 12px 20px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 600;
             text-align: center;
         }
-        h1 {
-            margin-bottom: 15px;
-            font-size: 2.5rem;
+
+        .partner-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
-        h2.subtitle {
-            font-size: 1.5rem;
-            color: #566573;
-            margin-bottom: 30px;
+
+        .partner-btn.active {
+            color: white;
+            border-color: transparent;
         }
-        .nav-tabs .nav-link {
-            color: #495057;
-            border-radius: 8px 8px 0 0;
-            margin-right: 5px;
-            font-weight: 500;
+
+        .partner-btn.diamond.active {
+            background: linear-gradient(135deg, #b83dba 0%, #8e44ad 100%);
         }
-        .nav-tabs .nav-link.active {
-            color: #fff;
-            background-color: #007bff;
-            border-color: #007bff;
+
+        .partner-btn.gold.active {
+            background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%);
         }
-        .card {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+
+        .partner-btn.silver.active {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+        }
+
+        .partner-btn.bronze.active {
+            background: linear-gradient(135deg, #cd7f32 0%, #a0522d 100%);
+        }
+
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             margin-bottom: 25px;
         }
-        .card-header {
-            background-color: #e9ecef;
-            color: #007bff;
-            font-weight: bold;
-            border-radius: 10px 10px 0 0;
-            padding: 1rem 1.25rem;
-            font-size: 1.1rem;
+
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+            border-right: 1px solid #dee2e6;
         }
-        .form-label {
-            font-weight: 500;
-            color: #495057;
+
+        .tab:last-child {
+            border-right: none;
         }
-        .form-control, .form-select {
-            border-radius: 6px;
-        }
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
-            padding: 0.75rem 1.25rem;
-            font-size: 1.1rem;
-            border-radius: 6px;
-            transition: background-color 0.2s ease-in-out;
-        }
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #0056b3;
-        }
-        .result-box {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #dee2e6;
-        }
-        .result-box .row {
-            margin-bottom: 0.75rem;
-        }
-        .result-box .fw-bold {
-            color: #212529;
-        }
-        .highlight-commission {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #28a745;
-        }
-        .table th {
-            background-color: #007bff;
+
+        .tab.active {
+            background: #ff6b35;
             color: white;
         }
+
+        .tab:hover:not(.active) {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #ff6b35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+
+        .bonus-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .bonus-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .bonus-item.checked {
+            background: #f8f9fa;
+            border-color: #28a745;
+        }
+
+        .bonus-item input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .bonus-item label {
+            margin: 0;
+            font-weight: 500;
+            cursor: pointer;
+            flex: 1;
+            text-align: left;
+            padding-left: 5px;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-1px);
+        }
+
+        .scenario-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .scenario-btn {
+            padding: 12px 16px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .scenario-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .scenario-btn.pessimo {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+
+        .scenario-btn.pessimo:hover, .scenario-btn.pessimo.active {
+            background: #dc3545;
+            color: white;
+        }
+
+        .scenario-btn.ruim {
+            border-color: #fd7e14;
+            color: #fd7e14;
+        }
+
+        .scenario-btn.ruim:hover, .scenario-btn.ruim.active {
+            background: #fd7e14;
+            color: white;
+        }
+
+        .scenario-btn.bom {
+            border-color: #28a745;
+            color: #28a745;
+        }
+
+        .scenario-btn.bom:hover, .scenario-btn.bom.active {
+            background: #28a745;
+            color: white;
+        }
+
+        .scenario-btn.otimo {
+            border-color: #17a2b8;
+            color: #17a2b8;
+        }
+
+        .scenario-btn.otimo:hover, .scenario-btn.otimo.active {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .scenario-btn.grande-venda {
+            border-color: #6f42c1;
+            color: #6f42c1;
+        }
+
+        .scenario-btn.grande-venda:hover, .scenario-btn.grande-venda.active {
+            background: #6f42c1;
+            color: white;
+        }
+
+        .results {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .results h3 {
+            color: #ff6b35;
+            margin-bottom: 20px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-item .label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .result-item .value {
+            font-weight: bold;
+            color: #ff6b35;
+        }
+
+        .result-item.total {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .result-item.total .label,
+        .result-item.total .value {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 13px;
+        }
+
+        .comparison-table th {
+            background: #ff6b35;
+            color: white;
+            font-weight: 600;
+        }
+
+        .comparison-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .rules-section {
+            margin-bottom: 30px;
+        }
+
+        .rules-section h4 {
+            color: #ff6b35;
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .rules-list {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #ff6b35;
+        }
+
+        .rules-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .rules-list li {
+            padding: 8px 0;
+            font-size: 13px;
+            color: #555;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .rules-list li:last-child {
+            border-bottom: none;
+        }
+
+        .bonus-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .bonus-table th,
+        .bonus-table td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 12px;
+        }
+
+        .bonus-table th {
+            background: #ff6b35;
+            color: white;
+            font-weight: 600;
+        }
+
+        .scenario-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            margin-bottom: 30px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .scenario-table th,
+        .scenario-table td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 12px;
+        }
+
+        .scenario-table th {
+            background: #ff6b35;
+            color: white;
+            font-weight: 600;
+        }
+
+        .scenario-table tr.current-scenario {
+            background-color: #fff3cd;
+            font-weight: bold;
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 400px;
+            margin-top: 30px;
+        }
+
         .footer {
             text-align: center;
-            margin-top: 50px;
-            padding-top: 20px;
-            border-top: 1px solid #dee2e6;
-            color: #6c757d;
-            font-size: 0.9rem;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+            font-size: 12px;
         }
-        .scenario-btn {
-            margin-bottom: 10px;
+
+        .bonus-check {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .bonus-check input {
+            margin: 0;
+        }
+
+        .bonus-check label {
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        .current-scenario-indicator {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                border-right: none;
+                border-bottom: 1px solid #dee2e6;
+            }
+            
+            .tab:last-child {
+                border-bottom: none;
+            }
+            
+            .two-columns {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Simulador de Vendas e Comissões</h1>
-        <h2 class="subtitle">Ateliê Rede (Monte Real) - 2025</h2>
+        <div class="header">
+            <h1>CMR - Cerâmica Monte Real 2025</h1>
+            <p>Simulador de Vendas e Comissões</p>
+        </div>
 
-        <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="simulador-tab" data-bs-toggle="tab" data-bs-target="#simulador" type="button" role="tab" aria-controls="simulador" aria-selected="true">Simulador</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="cenarios-tab" data-bs-toggle="tab" data-bs-target="#cenarios" type="button" role="tab" aria-controls="cenarios" aria-selected="false">Cenários</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="regras-tab" data-bs-toggle="tab" data-bs-target="#regras" type="button" role="tab" aria-controls="regras" aria-selected="false">Regras de Negócio</button>
-            </li>
-        </ul>
+        <!-- Nível do Parceiro - Primeiro Item -->
+        <div class="partner-level">
+            <h3>Selecione o Nível do Parceiro</h3>
+            <div class="partner-buttons">
+                <button class="partner-btn diamond" data-level="diamond">💎 Diamond</button>
+                <button class="partner-btn gold" data-level="gold">🥇 Gold</button>
+                <button class="partner-btn silver active" data-level="silver">🥈 Silver</button>
+                <button class="partner-btn bronze" data-level="bronze">🥉 Bronze</button>
+            </div>
+        </div>
 
-        <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="simulador" role="tabpanel" aria-labelledby="simulador-tab">
-                <div class="row mb-4">
-                    <div class="col-md-3">
-                        <button class="btn btn-outline-danger w-100 scenario-btn" onclick="carregarCenario('pessimo')">Cenário Péssimo</button>
+        <!-- Abas -->
+        <div class="tabs">
+            <button class="tab active" data-tab="simulador">Simulador</button>
+            <button class="tab" data-tab="cenarios">Cenários</button>
+            <button class="tab" data-tab="regras">Regras de Negócio</button>
+        </div>
+
+        <!-- Conteúdo do Simulador -->
+        <div id="simulador" class="tab-content active">
+            <!-- Cenários no Simulador -->
+            <div class="scenario-buttons">
+                <button class="scenario-btn pessimo" onclick="aplicarCenario('pessimo')">Péssimo</button>
+                <button class="scenario-btn ruim" onclick="aplicarCenario('ruim')">Ruim</button>
+                <button class="scenario-btn bom" onclick="aplicarCenario('bom')">Bom</button>
+                <button class="scenario-btn otimo" onclick="aplicarCenario('otimo')">Ótimo</button>
+                <button class="scenario-btn grande-venda" onclick="aplicarCenario('grandeVenda')">Grande Venda</button>
+            </div>
+            
+            <div id="current-scenario-indicator" class="current-scenario-indicator" style="display: none;">
+                Seu cenário atual está mais próximo do cenário: <strong id="current-scenario-name">-</strong>
+            </div>
+            
+            <div class="two-columns">
+                <!-- Coluna da Esquerda - Dados da Venda -->
+                <div>
+                    <div class="form-group">
+                        <label for="valorVenda">Valor da Venda (R$)</label>
+                        <input type="number" id="valorVenda" value="5000" min="0" step="100">
                     </div>
-                    <div class="col-md-3">
-                        <button class="btn btn-outline-warning w-100 scenario-btn" onclick="carregarCenario('ruim')">Cenário Ruim</button>
+
+                    <div class="form-group">
+                        <label for="prazoPagamento">Prazo de Pagamento</label>
+                        <select id="prazoPagamento">
+                            <option value="0">À Vista</option>
+                            <option value="30">1x (30 dias)</option>
+                            <option value="60">2x (60 dias)</option>
+                            <option value="90">3x (90 dias)</option>
+                            <option value="120">4x (120 dias)</option>
+                        </select>
                     </div>
-                    <div class="col-md-3">
-                        <button class="btn btn-outline-success w-100 scenario-btn" onclick="carregarCenario('bom')">Cenário Bom</button>
-                    </div>
-                    <div class="col-md-3">
-                        <button class="btn btn-outline-primary w-100 scenario-btn" onclick="carregarCenario('otimo')">Cenário Ótimo</button>
-                    </div>
-                </div>
-                
-                <div class="row">
-                    <div class="col-lg-7">
-                        <div class="card">
-                            <div class="card-header">Dados da Venda</div>
-                            <div class="card-body">
-                                <div class="mb-3">
-                                    <label for="valor-venda" class="form-label">Valor Total da Venda (R$):</label>
-                                    <input type="number" class="form-control form-control-lg" id="valor-venda" value="50000" min="1000" step="1000">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="tipo-venda" class="form-label">Canal da Venda:</label>
-                                    <select class="form-select form-select-lg" id="tipo-venda">
-                                        <option value="representante" selected>Venda por Representante</option>
-                                        <option value="direta">Venda Direta (Monte Real)</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="prazo-pagamento" class="form-label">Prazo de Pagamento (Dias):</label>
-                                    <select class="form-select form-select-lg" id="prazo-pagamento">
-                                        <option value="0">À Vista (10% Base)</option>
-                                        <option value="30">30 Dias (9% Base)</option>
-                                        <option value="60">60 Dias (7% Base)</option>
-                                        <option value="90">90 Dias (5% Base)</option>
-                                        <option value="120">120 Dias (3% Base)</option>
-                                    </select>
-                                </div>
-                                <h5 class="mt-4 mb-3">Bônus (Limitados a 10% Total):</h5>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="meta-atingida" checked>
-                                            <label class="form-check-label" for="meta-atingida">Meta Mensal Batida? (+1%)</label>
-                                        </div>
-                                        <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="mix-completo">
-                                            <label class="form-check-label" for="mix-completo">Vendeu Mix Completo? (+0.75%)</label>
-                                        </div>
-                                        <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="novo-cliente">
-                                            <label class="form-check-label" for="novo-cliente">Cliente Novo na Carteira? (+1.25%)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="estoque-parado">
-                                            <label class="form-check-label" for="estoque-parado">Desovou Estoque Parado? (+1.5%)</label>
-                                        </div>
-                                        <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="pequenas-falhas">
-                                            <label class="form-check-label" for="pequenas-falhas">Vendeu Peças c/ Detalhes? (+1.75%)</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <button class="btn btn-primary w-100 mt-4" onclick="calcularComissao()">CALCULAR COMISSÃO</button>
-                            </div>
+
+                    <button class="btn-primary" onclick="calcularComissao()">Calcular Comissão</button>
+
+                    <div id="resultados" class="results" style="margin-top: 20px;">
+                        <h3>Resultados da Simulação</h3>
+                        <div class="result-item">
+                            <div class="label">Comissão Base</div>
+                            <div class="value" id="comissaoBase">-</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="label">Ajuste Nível</div>
+                            <div class="value" id="ajusteNivel">-</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="label">Bônus Acumulativos</div>
+                            <div class="value" id="bonusAcumulativos">-</div>
+                        </div>
+                        <div class="result-item total">
+                            <div class="label">Comissão Total</div>
+                            <div class="value" id="comissaoTotal">-</div>
+                        </div>
+                        <div class="result-item total">
+                            <div class="label">Valor Final CMR</div>
+                            <div class="value" id="valorCMR">-</div>
                         </div>
                     </div>
-                    <div class="col-lg-5">
-                        <div class="card sticky-top" style="top: 20px;">
-                            <div class="card-header">Resultado da Simulação</div>
-                            <div class="card-body">
-                                <div class="result-box">
-                                    <div class="row"><div class="col-7 fw-bold">Valor da Venda:</div><div class="col-5 text-end" id="r-valor-venda">R$ 0,00</div></div>
-                                    <div class="row"><div class="col-7 fw-bold">Comissão Base (Prazo):</div><div class="col-5 text-end" id="r-comissao-base-prazo">R$ 0,00 (0%)</div></div>
-                                    <div class="row text-success"><div class="col-7 fw-bold">Bônus Meta:</div><div class="col-5 text-end" id="r-bonus-meta">R$ 0,00</div></div>
-                                    <div class="row text-success"><div class="col-7 fw-bold">Bônus Mix:</div><div class="col-5 text-end" id="r-bonus-mix">R$ 0,00</div></div>
-                                    <div class="row text-success"><div class="col-7 fw-bold">Bônus Cliente Novo:</div><div class="col-5 text-end" id="r-bonus-novo-cliente">R$ 0,00</div></div>
-                                    <div class="row text-success"><div class="col-7 fw-bold">Bônus Estoque Parado:</div><div class="col-5 text-end" id="r-bonus-estoque">R$ 0,00</div></div>
-                                    <div class="row text-success"><div class="col-7 fw-bold">Bônus Pequenas Falhas:</div><div class="col-5 text-end" id="r-bonus-falhas">R$ 0,00</div></div>
-                                    <hr>
-                                    <div class="row"><div class="col-7 fw-bold">COMISSÃO TOTAL BRUTA:</div><div class="col-5 text-end highlight-commission" id="r-comissao-total-bruta">R$ 0,00</div></div>
-                                    <div class="row"><div class="col-7 fw-bold">Percentual Efetivo:</div><div class="col-5 text-end fw-bold" id="r-percentual-efetivo">0%</div></div>
-                                    <hr>
-                                    <div class="row text-info"><div class="col-7 fw-bold">Repasse Estratégico (Você):</div><div class="col-5 text-end" id="r-repasse-usuario">R$ 0,00</div></div>
-                                    <div class="row text-danger"><div class="col-7 fw-bold">Custo Operacional:</div><div class="col-5 text-end" id="r-custo-operacional">R$ 0,00</div></div>
-                                    <hr>
-                                    <div class="row"><div class="col-7 fw-bold fs-5">LÍQUIDO PARA EMPRESA:</div><div class="col-5 text-end fs-5 fw-bold" id="r-liquido-empresa">R$ 0,00</div></div>
+
+                    <table class="comparison-table" style="margin-top: 20px;">
+                        <thead>
+                            <tr>
+                                <th>Nível</th>
+                                <th>Comissão</th>
+                                <th>Diferença</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaComparacao">
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Coluna da Direita - Bônus Acumulativos -->
+                <div>
+                    <div class="form-group">
+                        <label>Bônus Acumulativos</label>
+                        <div class="bonus-grid">
+                            <div class="bonus-item checked">
+                                <div class="bonus-check">
+                                    <input type="checkbox" id="metaMensal" checked>
+                                    <label for="metaMensal">Meta Mensal?</label>
+                                </div>
+                            </div>
+                            <div class="bonus-item checked">
+                                <div class="bonus-check">
+                                    <input type="checkbox" id="mixProdutos" checked>
+                                    <label for="mixProdutos">Mix Produtos?</label>
+                                </div>
+                            </div>
+                            <div class="bonus-item checked">
+                                <div class="bonus-check">
+                                    <input type="checkbox" id="clienteNovo" checked>
+                                    <label for="clienteNovo">Cliente Novo?</label>
+                                </div>
+                            </div>
+                            <div class="bonus-item checked">
+                                <div class="bonus-check">
+                                    <input type="checkbox" id="estoque" checked>
+                                    <label for="estoque">Estoque?</label>
+                                </div>
+                            </div>
+                            <div class="bonus-item checked">
+                                <div class="bonus-check">
+                                    <input type="checkbox" id="pequenosDefeitos" checked>
+                                    <label for="pequenosDefeitos">Pequenos Defeitos?</label>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="tab-pane fade" id="cenarios" role="tabpanel" aria-labelledby="cenarios-tab">
-                <div class="card">
-                    <div class="card-header">Cenários Pré-definidos</div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-striped table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Cenário</th>
-                                        <th>Valor da Venda</th>
-                                        <th>Canal</th>
-                                        <th>Prazo</th>
-                                        <th>Comissão Base</th>
-                                        <th>Bônus</th>
-                                        <th>Comissão Total</th>
-                                        <th>% Efetivo</th>
-                                        <th>Líquido Empresa</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><strong>Péssimo</strong></td>
-                                        <td>R$ 50.000,00</td>
-                                        <td>Direta</td>
-                                        <td>120 dias</td>
-                                        <td>R$ 1.500,00 (3%)</td>
-                                        <td>R$ 0,00 (0%)</td>
-                                        <td>R$ 1.500,00</td>
-                                        <td>3,00%</td>
-                                        <td>R$ 47.000,00</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Ruim</strong></td>
-                                        <td>R$ 50.000,00</td>
-                                        <td>Direta</td>
-                                        <td>90 dias</td>
-                                        <td>R$ 2.500,00 (5%)</td>
-                                        <td>R$ 500,00 (1%)</td>
-                                        <td>R$ 3.000,00</td>
-                                        <td>6,00%</td>
-                                        <td>R$ 45.500,00</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Bom</strong></td>
-                                        <td>R$ 50.000,00</td>
-                                        <td>Representante</td>
-                                        <td>30 dias</td>
-                                        <td>R$ 4.500,00 (9%)</td>
-                                        <td>R$ 1.500,00 (3%)</td>
-                                        <td>R$ 6.000,00</td>
-                                        <td>12,00%</td>
-                                        <td>R$ 42.000,00</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Ótimo</strong></td>
-                                        <td>R$ 50.000,00</td>
-                                        <td>Representante</td>
-                                        <td>À Vista</td>
-                                        <td>R$ 5.000,00 (10%)</td>
-                                        <td>R$ 3.125,00 (6.25%)</td>
-                                        <td>R$ 8.125,00</td>
-                                        <td>16,25%</td>
-                                        <td>R$ 39.875,00</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Grande Venda</strong></td>
-                                        <td>R$ 150.000,00</td>
-                                        <td>Representante</td>
-                                        <td>60 dias</td>
-                                        <td>R$ 15.000,00 (10%)</td>
-                                        <td>R$ 3.750,00 (2.5%)</td>
-                                        <td>R$ 18.750,00</td>
-                                        <td>12,50%</td>
-                                        <td>R$ 126.750,00</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        
-                        <h4 class="mt-4">Comparativo de Cenários</h4>
-                        <div class="chart-container" style="position: relative; height:400px;">
-                            <canvas id="cenarioChart"></canvas>
-                        </div>
-                    </div>
+        <!-- Conteúdo dos Cenários -->
+        <div id="cenarios" class="tab-content">
+            <h3>Cenários Pré-definidos</h3>
+            <div class="scenario-buttons">
+                <button class="scenario-btn pessimo" onclick="aplicarCenario('pessimo')">Péssimo</button>
+                <button class="scenario-btn ruim" onclick="aplicarCenario('ruim')">Ruim</button>
+                <button class="scenario-btn bom" onclick="aplicarCenario('bom')">Bom</button>
+                <button class="scenario-btn otimo" onclick="aplicarCenario('otimo')">Ótimo</button>
+                <button class="scenario-btn grande-venda" onclick="aplicarCenario('grandeVenda')">Grande Venda</button>
+            </div>
+            
+            <div id="current-scenario-indicator-tab" class="current-scenario-indicator" style="display: none;">
+                Seu cenário atual está mais próximo do cenário: <strong id="current-scenario-name-tab">-</strong>
+            </div>
+            
+            <table class="scenario-table">
+                <thead>
+                    <tr>
+                        <th>Cenário</th>
+                        <th>Prazo</th>
+                        <th>Meta Mensal</th>
+                        <th>Mix Produtos</th>
+                        <th>Cliente Novo</th>
+                        <th>Estoque</th>
+                        <th>Pequenos Defeitos</th>
+                        <th>Comissão Total</th>
+                        <th>Valor Final CMR</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaCenarios">
+                    <!-- Será preenchido dinamicamente -->
+                </tbody>
+            </table>
+            
+            <div class="chart-container">
+                <canvas id="cenarioChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Conteúdo das Regras -->
+        <div id="regras" class="tab-content">
+            <div class="rules-section">
+                <h4>1. Comissão Base por Prazo</h4>
+                <div class="rules-list">
+                    <ul>
+                        <li>À Vista: 10%</li>
+                        <li>1x (30 dias): 8% (-2%)</li>
+                        <li>2x (60 dias): 6% (-4%)</li>
+                        <li>3x (90 dias): 4% (-6%)</li>
+                        <li>4x (120 dias): 3% (-7%)</li>
+                    </ul>
                 </div>
             </div>
 
-            <div class="tab-pane fade" id="regras" role="tabpanel" aria-labelledby="regras-tab">
-                <div class="card">
-                    <div class="card-header">Regras Detalhadas do Sistema de Comissão</div>
-                    <div class="card-body">
-                        <h4>1. Comissão Base (Decrescente com Prazo)</h4>
-                        <p>A comissão base é decrescente conforme o prazo aumenta:</p>
-                        <ul>
-                            <li><strong>À Vista (0 dias):</strong> <span class="text-success fw-bold">10%</span> sobre o valor da venda</li>
-                            <li><strong>30 Dias:</strong> <span class="text-primary fw-bold">9%</span> sobre o valor da venda</li>
-                            <li><strong>60 Dias:</strong> <span class="text-info fw-bold">7%</span> sobre o valor da venda</li>
-                            <li><strong>90 Dias:</strong> <span class="text-warning fw-bold">5%</span> sobre o valor da venda</li>
-                            <li><strong>120 Dias:</strong> <span class="text-danger fw-bold">3%</span> sobre o valor da venda</li>
-                        </ul>
-                        
-                        <div class="alert alert-info">
-                            <strong>Regra Especial:</strong> Vendas acima de R$ 10.000,00 mantêm o percentual de 10% de comissão base, independentemente do prazo.
-                        </div>
+            <div class="rules-section">
+                <h4>2. Níveis de Parceiros</h4>
+                <div class="rules-list">
+                    <ul>
+                        <li>💎 <strong>Diamond:</strong> Metas atingidas recorrentes à 4 meses</li>
+                        <li>🥇 <strong>Gold:</strong> Metas atingidas recorrentes à 3 meses</li>
+                        <li>🥈 <strong>Silver:</strong> Metas atingidas recorrentes à 2 meses</li>
+                        <li>🥉 <strong>Bronze:</strong> Não bateu metas nos últimos 2 meses</li>
+                    </ul>
+                </div>
+            </div>
 
-                        <h4>2. Bônus Acumulativos (Limitados a 10% Total)</h4>
-                        <p>Os bônus são mantidos mesmo em prazos longos, mas limitados a 10% no total:</p>
-                        <ul>
-                            <li><strong>Meta Mensal Atingida:</strong> +1.00% sobre o valor da venda</li>
-                            <li><strong>Venda de Mix Completo de Produtos:</strong> +0.75% sobre o valor da venda</li>
-                            <li><strong>Conquista de Novo Cliente:</strong> +1.25% sobre o valor da venda</li>
-                            <li><strong>Venda de Estoque Parado:</strong> +1.50% sobre o valor da venda</li>
-                            <li><strong>Venda de Produtos com Pequenas Falhas:</strong> +1.75% sobre o valor da venda</li>
-                        </ul>
+            <div class="rules-section">
+                <h4>3. Bônus Acumulativos por Nível de Parceiro</h4>
+                <table class="bonus-table">
+                    <thead>
+                        <tr>
+                            <th>Bônus</th>
+                            <th>💎 Diamond</th>
+                            <th>🥇 Gold</th>
+                            <th>🥈 Silver</th>
+                            <th>🥉 Bronze</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Meta Mensal</td>
+                            <td>+2.0%</td>
+                            <td>+1.5%</td>
+                            <td>+1.0%</td>
+                            <td>+0.25%</td>
+                        </tr>
+                        <tr>
+                            <td>Mix Produtos</td>
+                            <td>+1.5%</td>
+                            <td>+1.0%</td>
+                            <td>+0.5%</td>
+                            <td>+0.25%</td>
+                        </tr>
+                        <tr>
+                            <td>Cliente Novo</td>
+                            <td>+1.5%</td>
+                            <td>+1.0%</td>
+                            <td>+0.5%</td>
+                            <td>+0.25%</td>
+                        </tr>
+                        <tr>
+                            <td>Estoque</td>
+                            <td>+1.5%</td>
+                            <td>+1.0%</td>
+                            <td>+0.5%</td>
+                            <td>+0.25%</td>
+                        </tr>
+                        <tr>
+                            <td>Pequenos Defeitos</td>
+                            <td>+3.0%</td>
+                            <td>+2.5%</td>
+                            <td>+2.0%</td>
+                            <td>+0.5%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total Máximo</strong></td>
+                            <td><strong>+9.5%</strong></td>
+                            <td><strong>+7.0%</strong></td>
+                            <td><strong>+4.5%</strong></td>
+                            <td><strong>+1.5%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-                        <h4>3. Repasse Estratégico</h4>
-                        <p>Um percentual de <span class="fw-bold">1%</span> sobre o valor de todas as vendas realizadas por Representantes da Carteira é destinado ao consultor estratégico.</p>
-                        <ul>
-                            <li>Aplica-se apenas a vendas via Representantes.</li>
-                            <li>Vendas Diretas da Monte Real não geram este repasse.</li>
-                        </ul>
-
-                        <h4>4. Custo Operacional Fixo</h4>
-                        <p>Um percentual de <span class="fw-bold">3%</span> sobre o valor da venda é destinado a custos operacionais (marketing, estratégia). Este valor é fixo e aplicado a todas as vendas.</p>
-
-                        <h4>5. Cálculo da Comissão Total</h4>
-                        <p>A comissão total é calculada da seguinte forma:</p>
-                        <div class="bg-light p-3 rounded">
-                            Comissão Total = Comissão Base (por prazo) + Bônus (limitados a 10% total)
-                        </div>
-
-                        <h4>6. Valor Líquido para a Empresa</h4>
-                        <p>O valor líquido para a empresa é calculado da seguinte forma:</p>
-                        <div class="bg-light p-3 rounded">
-                            Valor Líquido = Valor da Venda - Comissão Total - Repasse Estratégico - Custo Operacional
-                        </div>
-                    </div>
+            <div class="rules-section">
+                <h4>4. Regras Especiais</h4>
+                <div class="rules-list">
+                    <ul>
+                        <li>Vendas acima de R$ 10.000: Mantém 10% de comissão independente do prazo</li>
+                        <li>Todos os bônus são cumulativos e aplicados sobre o valor da venda</li>
+                        <li>O nível do parceiro afeta diretamente o valor dos bônus</li>
+                    </ul>
                 </div>
             </div>
         </div>
 
         <div class="footer">
-            Cerâmica Monte Real - CMR 2025 - Todos os direitos reservados
+            <p>Cerâmica Monte Real - CMR 2025 - Todos os direitos reservados</p>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        let nivelParceiro = 'silver';
+        let chartInstance = null;
+        let cenarioAtual = '';
+
+        // Configuração dos bônus por nível
+        const bonusConfig = {
+            diamond: {
+                metaMensal: 2.0,
+                mixProdutos: 1.5,
+                clienteNovo: 1.5,
+                estoque: 1.5,
+                pequenosDefeitos: 3.0
+            },
+            gold: {
+                metaMensal: 1.5,
+                mixProdutos: 1.0,
+                clienteNovo: 1.0,
+                estoque: 1.0,
+                pequenosDefeitos: 2.5
+            },
+            silver: {
+                metaMensal: 1.0,
+                mixProdutos: 0.5,
+                clienteNovo: 0.5,
+                estoque: 0.5,
+                pequenosDefeitos: 2.0
+            },
+            bronze: {
+                metaMensal: 0.25,
+                mixProdutos: 0.25,
+                clienteNovo: 0.25,
+                estoque: 0.25,
+                pequenosDefeitos: 0.5
+            }
+        };
+
+        // Ajuste de nível
+        const ajusteNivel = {
+            diamond: 1.0,
+            gold: 0.5,
+            silver: 0.0,
+            bronze: -0.25
+        };
+
+        // Configuração dos cenários
+        const cenarioConfig = {
+            pessimo: {
+                prazo: 120,
+                bonus: []
+            },
+            ruim: {
+                prazo: 90,
+                bonus: ['metaMensal']
+            },
+            bom: {
+                prazo: 30,
+                bonus: ['metaMensal', 'mixProdutos', 'clienteNovo']
+            },
+            otimo: {
+                prazo: 0,
+                bonus: ['metaMensal', 'mixProdutos', 'clienteNovo', 'estoque', 'pequenosDefeitos']
+            },
+            grandeVenda: {
+                prazo: 0,
+                bonus: ['metaMensal', 'mixProdutos', 'clienteNovo', 'estoque', 'pequenosDefeitos']
+            }
+        };
+
+        // Event listeners para abas
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabName = this.getAttribute('data-tab');
+                switchTab(tabName);
+                
+                // Inicializar gráfico se estiver na aba de cenários
+                if (tabName === 'cenarios') {
+                    atualizarTabelaCenarios();
+                    initCenarioChart();
+                }
+            });
+        });
+
+        // Event listeners para nível do parceiro
+        document.querySelectorAll('.partner-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.partner-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                nivelParceiro = this.getAttribute('data-level');
+                
+                // Recalcular comissão se os resultados já estiverem visíveis
+                if (document.getElementById('resultados').style.display !== 'none') {
+                    calcularComissao();
+                }
+            });
+        });
+
+        // Event listeners para checkboxes de bônus
+        document.querySelectorAll('.bonus-item input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const bonusItem = this.closest('.bonus-item');
+                if (this.checked) {
+                    bonusItem.classList.add('checked');
+                } else {
+                    bonusItem.classList.remove('checked');
+                }
+                
+                // Recalcular comissão se os resultados já estiverem visíveis
+                if (document.getElementById('resultados').style.display !== 'none') {
+                    calcularComissao();
+                }
+            });
+        });
+
+        function switchTab(tabName) {
+            // Remover classe active de todas as abas e conteúdos
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Adicionar classe active na aba e conteúdo selecionados
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        function aplicarCenario(cenario) {
+            // Não alterar o valor da venda, apenas aplicar as condições do cenário
+            document.getElementById('prazoPagamento').value = cenarioConfig[cenario].prazo;
+            desmarcarTodosBonusExceto(cenarioConfig[cenario].bonus);
+            
+            // Destacar o botão do cenário selecionado
+            document.querySelectorAll('.scenario-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent === cenarioNomeFormatado(cenario)) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Atualizar cenário atual
+            cenarioAtual = cenario;
+            
+            // Voltar para a aba do simulador
+            switchTab('simulador');
+            
+            // Calcular automaticamente
+            setTimeout(() => {
+                calcularComissao();
+            }, 100);
+        }
+
+        function desmarcarTodosBonusExceto(manter) {
+            const checkboxes = ['metaMensal', 'mixProdutos', 'clienteNovo', 'estoque', 'pequenosDefeitos'];
+            
+            checkboxes.forEach(id => {
+                const checkbox = document.getElementById(id);
+                const bonusItem = checkbox.closest('.bonus-item');
+                
+                if (manter.includes(id)) {
+                    checkbox.checked = true;
+                    bonusItem.classList.add('checked');
+                } else {
+                    checkbox.checked = false;
+                    bonusItem.classList.remove('checked');
+                }
+            });
+        }
+
+        function calcularComissao() {
+            const valorVenda = parseFloat(document.getElementById('valorVenda').value) || 0;
+            const prazo = parseInt(document.getElementById('prazoPagamento').value) || 0;
+            
+            // Comissão base por prazo
+            let comissaoBase = 10; // À vista
+            if (valorVenda <= 10000) {
+                switch(prazo) {
+                    case 30: comissaoBase = 8; break;
+                    case 60: comissaoBase = 6; break;
+                    case 90: comissaoBase = 4; break;
+                    case 120: comissaoBase = 3; break;
+                }
+            }
+            
+            // Ajuste do nível
+            const ajuste = ajusteNivel[nivelParceiro];
+            
+            // Calcular bônus acumulativos
+            let bonusTotal = 0;
+            const config = bonusConfig[nivelParceiro];
+            
+            if (document.getElementById('metaMensal').checked) {
+                bonusTotal += config.metaMensal;
+            }
+            if (document.getElementById('mixProdutos').checked) {
+                bonusTotal += config.mixProdutos;
+            }
+            if (document.getElementById('clienteNovo').checked) {
+                bonusTotal += config.clienteNovo;
+            }
+            if (document.getElementById('estoque').checked) {
+                bonusTotal += config.estoque;
+            }
+            if (document.getElementById('pequenosDefeitos').checked) {
+                bonusTotal += config.pequenosDefeitos;
+            }
+            
+            // Comissão total
+            const comissaoTotalPercent = comissaoBase + ajuste + bonusTotal;
+            const comissaoTotalValor = (valorVenda * comissaoTotalPercent) / 100;
+            const valorCMR = valorVenda - comissaoTotalValor;
+            
+            // Exibir resultados
+            document.getElementById('comissaoBase').innerHTML = `${comissaoBase.toFixed(1)}% (R$ ${(valorVenda * comissaoBase / 100).toLocaleString('pt-BR', {minimumFractionDigits: 2})})`;
+            document.getElementById('ajusteNivel').innerHTML = `${ajuste >= 0 ? '+' : ''}${ajuste.toFixed(2)}% (R$ ${ajuste >= 0 ? '+' : ''}${(valorVenda * ajuste / 100).toLocaleString('pt-BR', {minimumFractionDigits: 2})})`;
+            document.getElementById('bonusAcumulativos').innerHTML = `+${bonusTotal.toFixed(2)}% (R$ +${(valorVenda * bonusTotal / 100).toLocaleString('pt-BR', {minimumFractionDigits: 2})})`;
+            document.getElementById('comissaoTotal').innerHTML = `${comissaoTotalPercent.toFixed(2)}% (R$ ${comissaoTotalValor.toLocaleString('pt-BR', {minimumFractionDigits: 2})})`;
+            document.getElementById('valorCMR').innerHTML = `R$ ${valorCMR.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            
+            // Tabela de comparação
+            gerarTabelaComparacao(valorVenda, prazo);
+            
+            document.getElementById('resultados').style.display = 'block';
+            
+            // Identificar cenário atual
+            identificarCenarioAtual();
+            
+            // Atualizar tabela de cenários se estiver na aba de cenários
+            if (document.getElementById('cenarios').classList.contains('active')) {
+                atualizarTabelaCenarios();
+                initCenarioChart();
+            }
+        }
+
+        function gerarTabelaComparacao(valorVenda, prazo) {
+            const niveis = ['bronze', 'silver', 'gold', 'diamond'];
+            const tbody = document.getElementById('tabelaComparacao');
+            tbody.innerHTML = '';
+            
+            niveis.forEach(nivel => {
+                const config = bonusConfig[nivel];
+                const ajuste = ajusteNivel[nivel];
+                
+                // Comissão base
+                let comissaoBase = 10;
+                if (valorVenda <= 10000) {
+                    switch(prazo) {
+                        case 30: comissaoBase = 8; break;
+                        case 60: comissaoBase = 6; break;
+                        case 90: comissaoBase = 4; break;
+                        case 120: comissaoBase = 3; break;
+                    }
+                }
+                
+                // Bônus (assumindo todos marcados para comparação)
+                let bonusTotal = 0;
+                if (document.getElementById('metaMensal').checked) bonusTotal += config.metaMensal;
+                if (document.getElementById('mixProdutos').checked) bonusTotal += config.mixProdutos;
+                if (document.getElementById('clienteNovo').checked) bonusTotal += config.clienteNovo;
+                if (document.getElementById('estoque').checked) bonusTotal += config.estoque;
+                if (document.getElementById('pequenosDefeitos').checked) bonusTotal += config.pequenosDefeitos;
+                
+                const comissaoTotalPercent = comissaoBase + ajuste + bonusTotal;
+                const comissaoTotalValor = (valorVenda * comissaoTotalPercent) / 100;
+                
+                const row = document.createElement('tr');
+                const nivelAtual = nivel === nivelParceiro;
+                
+                if (nivelAtual) {
+                    row.style.backgroundColor = '#fff3cd';
+                    row.style.fontWeight = 'bold';
+                }
+                
+                const emoji = nivel === 'diamond' ? '💎' : nivel === 'gold' ? '🥇' : nivel === 'silver' ? '🥈' : '🥉';
+                const nomeNivel = nivel.charAt(0).toUpperCase() + nivel.slice(1);
+                
+                row.innerHTML = `
+                    <td>${emoji} ${nomeNivel}${nivelAtual ? ' (Atual)' : ''}</td>
+                    <td>R$ ${comissaoTotalValor.toLocaleString('pt-BR', {minimumFractionDigits: 2})} (${comissaoTotalPercent.toFixed(2)}%)</td>
+                    <td>${nivelAtual ? '-' : 'R$ ' + Math.abs(comissaoTotalValor - (valorVenda * (comissaoBase + ajusteNivel[nivelParceiro] + bonusTotal)) / 100).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        function atualizarTabelaCenarios() {
+            const valorVenda = parseFloat(document.getElementById('valorVenda').value) || 0;
+            const tbody = document.getElementById('tabelaCenarios');
+            tbody.innerHTML = '';
+            
+            const cenarios = ['pessimo', 'ruim', 'bom', 'otimo', 'grandeVenda'];
+            const cenarioNomes = {
+                'pessimo': 'Péssimo',
+                'ruim': 'Ruim',
+                'bom': 'Bom',
+                'otimo': 'Ótimo',
+                'grandeVenda': 'Grande Venda'
+            };
+            
+            const prazoTexto = {
+                0: 'À Vista',
+                30: '30 dias',
+                60: '60 dias',
+                90: '90 dias',
+                120: '120 dias'
+            };
+            
+            cenarios.forEach(cenario => {
+                const config = cenarioConfig[cenario];
+                const prazo = config.prazo;
+                
+                // Comissão base por prazo
+                let comissaoBase = 10; // À vista
+                if (valorVenda <= 10000) {
+                    switch(prazo) {
+                        case 30: comissaoBase = 8; break;
+                        case 60: comissaoBase = 6; break;
+                        case 90: comissaoBase = 4; break;
+                        case 120: comissaoBase = 3; break;
+                    }
+                }
+                
+                // Ajuste do nível
+                const ajuste = ajusteNivel[nivelParceiro];
+                
+                // Calcular valores para cada bônus
+                const bonusConfig2 = bonusConfig[nivelParceiro];
+                const metaMensalValor = config.bonus.includes('metaMensal') ? (valorVenda * bonusConfig2.metaMensal) / 100 : 0;
+                const mixProdutosValor = config.bonus.includes('mixProdutos') ? (valorVenda * bonusConfig2.mixProdutos) / 100 : 0;
+                const clienteNovoValor = config.bonus.includes('clienteNovo') ? (valorVenda * bonusConfig2.clienteNovo) / 100 : 0;
+                const estoqueValor = config.bonus.includes('estoque') ? (valorVenda * bonusConfig2.estoque) / 100 : 0;
+                const pequenosDefeitosValor = config.bonus.includes('pequenosDefeitos') ? (valorVenda * bonusConfig2.pequenosDefeitos) / 100 : 0;
+                
+                // Calcular bônus total
+                let bonusTotal = metaMensalValor + mixProdutosValor + clienteNovoValor + estoqueValor + pequenosDefeitosValor;
+                
+                // Comissão total
+                const comissaoBaseValor = (valorVenda * comissaoBase) / 100;
+                const ajusteValor = (valorVenda * ajuste) / 100;
+                const comissaoTotalValor = comissaoBaseValor + ajusteValor + bonusTotal;
+                const valorCMR = valorVenda - comissaoTotalValor;
+                
+                const row = document.createElement('tr');
+                
+                // Destacar cenário atual
+                if (cenario === cenarioAtual) {
+                    row.classList.add('current-scenario');
+                }
+                
+                row.innerHTML = `
+                    <td><strong>${cenarioNomes[cenario]}</strong></td>
+                    <td>${prazoTexto[prazo]}</td>
+                    <td>R$ ${metaMensalValor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                    <td>R$ ${mixProdutosValor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                    <td>R$ ${clienteNovoValor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                    <td>R$ ${estoqueValor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                    <td>R$ ${pequenosDefeitosValor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                    <td>R$ ${comissaoTotalValor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                    <td>R$ ${valorCMR.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
         // Inicializar gráfico de cenários
-        document.addEventListener('DOMContentLoaded', function() {
-            const ctx = document.getElementById('cenarioChart').getContext('2d');
-            const cenarioChart = new Chart(ctx, {
+        function initCenarioChart() {
+            const ctx = document.getElementById('cenarioChart');
+            const valorVenda = parseFloat(document.getElementById('valorVenda').value) || 0;
+            
+            // Calcular valores para cada cenário
+            const dadosGrafico = {
+                labels: ['Péssimo', 'Ruim', 'Bom', 'Ótimo', 'Grande Venda'],
+                comissaoBase: [],
+                bonus: [],
+                valorCMR: []
+            };
+            
+            const cenarios = ['pessimo', 'ruim', 'bom', 'otimo', 'grandeVenda'];
+            
+            cenarios.forEach(cenario => {
+                const config = cenarioConfig[cenario];
+                const prazo = config.prazo;
+                
+                // Comissão base por prazo
+                let comissaoBase = 10; // À vista
+                if (valorVenda <= 10000) {
+                    switch(prazo) {
+                        case 30: comissaoBase = 8; break;
+                        case 60: comissaoBase = 6; break;
+                        case 90: comissaoBase = 4; break;
+                        case 120: comissaoBase = 3; break;
+                    }
+                }
+                
+                // Ajuste do nível
+                const ajuste = ajusteNivel[nivelParceiro];
+                
+                // Calcular bônus acumulativos
+                let bonusTotal = 0;
+                const bonusConfig2 = bonusConfig[nivelParceiro];
+                
+                config.bonus.forEach(bonus => {
+                    bonusTotal += bonusConfig2[bonus];
+                });
+                
+                // Comissão total
+                const comissaoBaseValor = (valorVenda * comissaoBase) / 100;
+                const ajusteValor = (valorVenda * ajuste) / 100;
+                const bonusValor = (valorVenda * bonusTotal) / 100;
+                const valorCMR = valorVenda - comissaoBaseValor - ajusteValor - bonusValor;
+                
+                dadosGrafico.comissaoBase.push(comissaoBaseValor);
+                dadosGrafico.bonus.push(bonusValor);
+                dadosGrafico.valorCMR.push(valorCMR);
+            });
+            
+            // Verificar se o gráfico já existe e destruí-lo
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+            
+            chartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Péssimo', 'Ruim', 'Bom', 'Ótimo', 'Grande Venda'],
+                    labels: dadosGrafico.labels,
                     datasets: [
                         {
                             label: 'Comissão Base',
-                            data: [1500, 2500, 4500, 5000, 15000],
-                            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                            data: dadosGrafico.comissaoBase,
+                            backgroundColor: 'rgba(255, 107, 53, 0.7)',
                         },
                         {
                             label: 'Bônus',
-                            data: [0, 500, 1500, 3125, 3750],
+                            data: dadosGrafico.bonus,
                             backgroundColor: 'rgba(75, 192, 192, 0.7)',
                         },
                         {
-                            label: 'Repasse',
-                            data: [0, 0, 500, 500, 1500],
-                            backgroundColor: 'rgba(255, 206, 86, 0.7)',
+                            label: 'Valor Final CMR',
+                            data: dadosGrafico.valorCMR,
+                            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                            type: 'line',
+                            yAxisID: 'y1'
                         }
                     ]
                 },
@@ -406,160 +1298,138 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        x: {
-                            stacked: false,
-                        },
                         y: {
                             beginAtZero: true,
                             title: {
                                 display: true,
-                                text: 'Valor (R$)'
+                                text: 'Comissão (R$)'
+                            },
+                            position: 'left'
+                        },
+                        y1: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Valor Final CMR (R$)'
+                            },
+                            position: 'right',
+                            grid: {
+                                drawOnChartArea: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.parsed.y);
+                                    }
+                                    return label;
+                                }
                             }
                         }
                     }
                 }
             });
+        }
+
+        function identificarCenarioAtual() {
+            const prazo = parseInt(document.getElementById('prazoPagamento').value) || 0;
+            const bonusAtivos = [];
+            
+            if (document.getElementById('metaMensal').checked) bonusAtivos.push('metaMensal');
+            if (document.getElementById('mixProdutos').checked) bonusAtivos.push('mixProdutos');
+            if (document.getElementById('clienteNovo').checked) bonusAtivos.push('clienteNovo');
+            if (document.getElementById('estoque').checked) bonusAtivos.push('estoque');
+            if (document.getElementById('pequenosDefeitos').checked) bonusAtivos.push('pequenosDefeitos');
+            
+            // Calcular pontuação de similaridade para cada cenário
+            const cenarios = ['pessimo', 'ruim', 'bom', 'otimo', 'grandeVenda'];
+            let melhorCenario = '';
+            let melhorPontuacao = -1;
+            
+            cenarios.forEach(cenario => {
+                const config = cenarioConfig[cenario];
+                let pontuacao = 0;
+                
+                // Pontos para prazo igual
+                if (prazo === config.prazo) {
+                    pontuacao += 10;
+                } else {
+                    // Pontos parciais baseados na proximidade do prazo
+                    const prazos = [0, 30, 60, 90, 120];
+                    const indexAtual = prazos.indexOf(prazo);
+                    const indexCenario = prazos.indexOf(config.prazo);
+                    if (indexAtual !== -1 && indexCenario !== -1) {
+                        pontuacao += 10 - Math.abs(indexAtual - indexCenario) * 2;
+                    }
+                }
+                
+                // Pontos para bônus iguais
+                config.bonus.forEach(bonus => {
+                    if (bonusAtivos.includes(bonus)) {
+                        pontuacao += 2;
+                    }
+                });
+                
+                // Penalidade para bônus extras ou faltantes
+                const bonusExtras = bonusAtivos.filter(b => !config.bonus.includes(b)).length;
+                const bonusFaltantes = config.bonus.filter(b => !bonusAtivos.includes(b)).length;
+                pontuacao -= (bonusExtras + bonusFaltantes) * 1;
+                
+                if (pontuacao > melhorPontuacao) {
+                    melhorPontuacao = pontuacao;
+                    melhorCenario = cenario;
+                }
+            });
+            
+            // Atualizar indicador de cenário atual
+            if (melhorCenario) {
+                cenarioAtual = melhorCenario;
+                const cenarioNome = cenarioNomeFormatado(melhorCenario);
+                document.getElementById('current-scenario-name').textContent = cenarioNome;
+                document.getElementById('current-scenario-name-tab').textContent = cenarioNome;
+                document.getElementById('current-scenario-indicator').style.display = 'block';
+                document.getElementById('current-scenario-indicator-tab').style.display = 'block';
+                
+                // Destacar botão do cenário atual
+                document.querySelectorAll('.scenario-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.textContent === cenarioNome) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
+        }
+
+        function cenarioNomeFormatado(cenario) {
+            const nomes = {
+                'pessimo': 'Péssimo',
+                'ruim': 'Ruim',
+                'bom': 'Bom',
+                'otimo': 'Ótimo',
+                'grandeVenda': 'Grande Venda'
+            };
+            return nomes[cenario] || cenario;
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            // Marcar todos os checkboxes como checked por padrão
+            document.querySelectorAll('.bonus-item input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = true;
+                checkbox.closest('.bonus-item').classList.add('checked');
+            });
             
             // Calcular comissão inicial
             calcularComissao();
         });
-
-        function calcularComissao() {
-            const valorVenda = parseFloat(document.getElementById('valor-venda').value) || 0;
-            const tipoVenda = document.getElementById('tipo-venda').value;
-            const prazoDias = parseInt(document.getElementById('prazo-pagamento').value);
-
-            const metaAtingida = document.getElementById('meta-atingida').checked;
-            const mixCompleto = document.getElementById('mix-completo').checked;
-            const novoCliente = document.getElementById('novo-cliente').checked;
-            const estoqueParado = document.getElementById('estoque-parado').checked;
-            const pequenasFalhas = document.getElementById('pequenas-falhas').checked;
-
-            // Determinar percentual base com base no prazo
-            let percentualBase = 0;
-            let prazoTexto = "";
-
-            // Regra especial: vendas acima de 10K mantêm 10% independente do prazo
-            if (valorVenda > 10000) {
-                percentualBase = 0.10;
-                if (prazoDias === 0) prazoTexto = "À Vista (10% Base)";
-                else if (prazoDias === 30) prazoTexto = "30 Dias (10% Base - Regra Especial)";
-                else if (prazoDias === 60) prazoTexto = "60 Dias (10% Base - Regra Especial)";
-                else if (prazoDias === 90) prazoTexto = "90 Dias (10% Base - Regra Especial)";
-                else if (prazoDias === 120) prazoTexto = "120 Dias (10% Base - Regra Especial)";
-            } else {
-                if (prazoDias === 0) { percentualBase = 0.10; prazoTexto = "À Vista (10% Base)"; }
-                else if (prazoDias === 30) { percentualBase = 0.09; prazoTexto = "30 Dias (9% Base)"; }
-                else if (prazoDias === 60) { percentualBase = 0.07; prazoTexto = "60 Dias (7% Base)"; }
-                else if (prazoDias === 90) { percentualBase = 0.05; prazoTexto = "90 Dias (5% Base)"; }
-                else if (prazoDias === 120) { percentualBase = 0.03; prazoTexto = "120 Dias (3% Base)"; }
-            }
-
-            let comissaoBaseValor = valorVenda * percentualBase;
-
-            // Calcular bônus individuais
-            let bonusMetaValor = metaAtingida ? valorVenda * 0.01 : 0;
-            let bonusMixValor = mixCompleto ? valorVenda * 0.0075 : 0;
-            let bonusNovoClienteValor = novoCliente ? valorVenda * 0.0125 : 0;
-            let bonusEstoqueValor = estoqueParado ? valorVenda * 0.015 : 0;
-            let bonusFalhasValor = pequenasFalhas ? valorVenda * 0.0175 : 0;
-
-            // Calcular total de bônus (limitado a 10%)
-            let totalBonusPercentual = (bonusMetaValor + bonusMixValor + bonusNovoClienteValor + bonusEstoqueValor + bonusFalhasValor) / valorVenda;
-            
-            // Limitar bônus a 10%
-            if (totalBonusPercentual > 0.10) {
-                const fatorReducao = 0.10 / totalBonusPercentual;
-                bonusMetaValor *= fatorReducao;
-                bonusMixValor *= fatorReducao;
-                bonusNovoClienteValor *= fatorReducao;
-                bonusEstoqueValor *= fatorReducao;
-                bonusFalhasValor *= fatorReducao;
-                totalBonusPercentual = 0.10;
-            }
-
-            const totalBonus = bonusMetaValor + bonusMixValor + bonusNovoClienteValor + bonusEstoqueValor + bonusFalhasValor;
-            const comissaoTotalBruta = comissaoBaseValor + totalBonus;
-            const percentualEfetivo = (comissaoTotalBruta / valorVenda) * 100;
-
-            let repasseUsuarioValor = 0;
-            if (tipoVenda === 'representante') {
-                repasseUsuarioValor = valorVenda * 0.01;
-            }
-
-            const custoOperacionalValor = valorVenda * 0.03;
-            const liquidoEmpresa = valorVenda - comissaoTotalBruta - repasseUsuarioValor - custoOperacionalValor;
-
-            // Atualizar resultados na interface
-            document.getElementById('r-valor-venda').textContent = `R$ ${valorVenda.toFixed(2)}`;
-            document.getElementById('r-comissao-base-prazo').textContent = `R$ ${comissaoBaseValor.toFixed(2)} (${(percentualBase * 100).toFixed(1)}%)`;
-            document.getElementById('r-bonus-meta').textContent = `R$ ${bonusMetaValor.toFixed(2)}`;
-            document.getElementById('r-bonus-mix').textContent = `R$ ${bonusMixValor.toFixed(2)}`;
-            document.getElementById('r-bonus-novo-cliente').textContent = `R$ ${bonusNovoClienteValor.toFixed(2)}`;
-            document.getElementById('r-bonus-estoque').textContent = `R$ ${bonusEstoqueValor.toFixed(2)}`;
-            document.getElementById('r-bonus-falhas').textContent = `R$ ${bonusFalhasValor.toFixed(2)}`;
-            document.getElementById('r-comissao-total-bruta').textContent = `R$ ${comissaoTotalBruta.toFixed(2)}`;
-            document.getElementById('r-percentual-efetivo').textContent = `${percentualEfetivo.toFixed(2)}%`;
-            document.getElementById('r-repasse-usuario').textContent = `R$ ${repasseUsuarioValor.toFixed(2)}`;
-            document.getElementById('r-custo-operacional').textContent = `R$ ${custoOperacionalValor.toFixed(2)}`;
-            document.getElementById('r-liquido-empresa').textContent = `R$ ${liquidoEmpresa.toFixed(2)}`;
-        }
-
-        function carregarCenario(cenario) {
-            const valorVenda = document.getElementById('valor-venda');
-            const tipoVenda = document.getElementById('tipo-venda');
-            const prazoPagamento = document.getElementById('prazo-pagamento');
-            const metaAtingida = document.getElementById('meta-atingida');
-            const mixCompleto = document.getElementById('mix-completo');
-            const novoCliente = document.getElementById('novo-cliente');
-            const estoqueParado = document.getElementById('estoque-parado');
-            const pequenasFalhas = document.getElementById('pequenas-falhas');
-
-            switch(cenario) {
-                case 'pessimo':
-                    valorVenda.value = 50000;
-                    tipoVenda.value = 'direta';
-                    prazoPagamento.value = 120;
-                    metaAtingida.checked = false;
-                    mixCompleto.checked = false;
-                    novoCliente.checked = false;
-                    estoqueParado.checked = false;
-                    pequenasFalhas.checked = false;
-                    break;
-                case 'ruim':
-                    valorVenda.value = 50000;
-                    tipoVenda.value = 'direta';
-                    prazoPagamento.value = 90;
-                    metaAtingida.checked = true;
-                    mixCompleto.checked = false;
-                    novoCliente.checked = false;
-                    estoqueParado.checked = false;
-                    pequenasFalhas.checked = false;
-                    break;
-                case 'bom':
-                    valorVenda.value = 50000;
-                    tipoVenda.value = 'representante';
-                    prazoPagamento.value = 30;
-                    metaAtingida.checked = true;
-                    mixCompleto.checked = true;
-                    novoCliente.checked = true;
-                    estoqueParado.checked = false;
-                    pequenasFalhas.checked = false;
-                    break;
-                case 'otimo':
-                    valorVenda.value = 50000;
-                    tipoVenda.value = 'representante';
-                    prazoPagamento.value = 0;
-                    metaAtingida.checked = true;
-                    mixCompleto.checked = true;
-                    novoCliente.checked = true;
-                    estoqueParado.checked = true;
-                    pequenasFalhas.checked = true;
-                    break;
-            }
-            
-            calcularComissao();
-        }
     </script>
 </body>
 </html>
+
