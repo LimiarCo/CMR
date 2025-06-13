@@ -602,7 +602,6 @@
                 <button class="scenario-btn ruim" onclick="aplicarCenario('ruim')">Ruim</button>
                 <button class="scenario-btn bom" onclick="aplicarCenario('bom')">Bom</button>
                 <button class="scenario-btn otimo" onclick="aplicarCenario('otimo')">Ótimo</button>
-                <button class="scenario-btn grande-venda" onclick="aplicarCenario('grandeVenda')">Grande Venda</button>
             </div>
             
             <div id="current-scenario-indicator" class="current-scenario-indicator" style="display: none;">
@@ -636,10 +635,7 @@
                             <div class="label">Comissão Base</div>
                             <div class="value" id="comissaoBase">-</div>
                         </div>
-                        <div class="result-item">
-                            <div class="label">Ajuste Nível</div>
-                            <div class="value" id="ajusteNivel">-</div>
-                        </div>
+                        <!-- Ajuste Nível Removido -->
                         <div class="result-item">
                             <div class="label">Bônus Acumulativos</div>
                             <div class="value" id="bonusAcumulativos">-</div>
@@ -692,8 +688,8 @@
                             </div>
                             <div class="bonus-item checked">
                                 <div class="bonus-check">
-                                    <input type="checkbox" id="estoque" checked>
-                                    <label for="estoque">Estoque?</label>
+                                    <input type="checkbox" id="vendaEstoque" checked>
+                                    <label for="vendaEstoque">Venda Estoque?</label>
                                 </div>
                             </div>
                             <div class="bonus-item checked">
@@ -727,18 +723,18 @@
                 <thead>
                     <tr>
                         <th>Cenário</th>
+                        <th>Valor da Venda</th>
                         <th>Prazo</th>
                         <th>Meta Mensal</th>
                         <th>Mix Produtos</th>
                         <th>Cliente Novo</th>
-                        <th>Estoque</th>
+                        <th>Venda Estoque</th>
                         <th>Pequenos Defeitos</th>
                         <th>Comissão Total</th>
                         <th>Valor Final CMR</th>
                     </tr>
                 </thead>
                 <tbody id="tabelaCenarios">
-                    <!-- Será preenchido dinamicamente -->
                 </tbody>
             </table>
             
@@ -789,45 +785,45 @@
                     <tbody>
                         <tr>
                             <td>Meta Mensal</td>
-                            <td>+2.0%</td>
-                            <td>+1.5%</td>
                             <td>+1.0%</td>
-                            <td>+0.25%</td>
+                            <td>+0.8%</td>
+                            <td>+0.6%</td>
+                            <td>+0.4%</td>
                         </tr>
                         <tr>
                             <td>Mix Produtos</td>
-                            <td>+1.5%</td>
                             <td>+1.0%</td>
-                            <td>+0.5%</td>
-                            <td>+0.25%</td>
+                            <td>+0.8%</td>
+                            <td>+0.6%</td>
+                            <td>+0.4%</td>
                         </tr>
                         <tr>
                             <td>Cliente Novo</td>
-                            <td>+1.5%</td>
                             <td>+1.0%</td>
-                            <td>+0.5%</td>
-                            <td>+0.25%</td>
+                            <td>+0.8%</td>
+                            <td>+0.6%</td>
+                            <td>+0.4%</td>
                         </tr>
                         <tr>
-                            <td>Estoque</td>
-                            <td>+1.5%</td>
+                            <td>Venda Estoque</td>
                             <td>+1.0%</td>
-                            <td>+0.5%</td>
-                            <td>+0.25%</td>
+                            <td>+0.8%</td>
+                            <td>+0.6%</td>
+                            <td>+0.4%</td>
                         </tr>
                         <tr>
                             <td>Pequenos Defeitos</td>
-                            <td>+3.0%</td>
-                            <td>+2.5%</td>
-                            <td>+2.0%</td>
-                            <td>+0.5%</td>
+                            <td>+1.0%</td>
+                            <td>+0.8%</td>
+                            <td>+0.6%</td>
+                            <td>+0.4%</td>
                         </tr>
                         <tr>
                             <td><strong>Total Máximo</strong></td>
-                            <td><strong>+9.5%</strong></td>
-                            <td><strong>+7.0%</strong></td>
-                            <td><strong>+4.5%</strong></td>
-                            <td><strong>+1.5%</strong></td>
+                            <td><strong>+5.0%</strong></td>
+                            <td><strong>+4.0%</strong></td>
+                            <td><strong>+3.0%</strong></td>
+                            <td><strong>+2.0%</strong></td>
                         </tr>
                     </tbody>
                 </table>
@@ -854,48 +850,41 @@
         let nivelParceiro = 'silver';
         let chartInstance = null;
         let cenarioAtual = '';
+        let valorVendaOriginal = 5000;
 
-        // Configuração dos bônus por nível
         const bonusConfig = {
             diamond: {
-                metaMensal: 2.0,
-                mixProdutos: 1.5,
-                clienteNovo: 1.5,
-                estoque: 1.5,
-                pequenosDefeitos: 3.0
-            },
-            gold: {
-                metaMensal: 1.5,
+                metaMensal: 1.0,
                 mixProdutos: 1.0,
                 clienteNovo: 1.0,
-                estoque: 1.0,
-                pequenosDefeitos: 2.5
+                vendaEstoque: 1.0,
+                pequenosDefeitos: 1.0
+            },
+            gold: {
+                metaMensal: 0.8,
+                mixProdutos: 0.8,
+                clienteNovo: 0.8,
+                vendaEstoque: 0.8,
+                pequenosDefeitos: 0.8 
             },
             silver: {
-                metaMensal: 1.0,
-                mixProdutos: 0.5,
-                clienteNovo: 0.5,
-                estoque: 0.5,
-                pequenosDefeitos: 2.0
+                metaMensal: 0.6,
+                mixProdutos: 0.6,
+                clienteNovo: 0.6,
+                vendaEstoque: 0.6,
+                pequenosDefeitos: 0.6
             },
             bronze: {
-                metaMensal: 0.25,
-                mixProdutos: 0.25,
-                clienteNovo: 0.25,
-                estoque: 0.25,
-                pequenosDefeitos: 0.5
+                metaMensal: 0.4,
+                mixProdutos: 0.4,
+                clienteNovo: 0.4,
+                vendaEstoque: 0.4,
+                pequenosDefeitos: 0.4
             }
         };
 
-        // Ajuste de nível
-        const ajusteNivel = {
-            diamond: 1.0,
-            gold: 0.5,
-            silver: 0.0,
-            bronze: -0.25
-        };
+        // Ajuste Nível Removido
 
-        // Configuração dos cenários
         const cenarioConfig = {
             pessimo: {
                 prazo: 120,
@@ -911,21 +900,19 @@
             },
             otimo: {
                 prazo: 0,
-                bonus: ['metaMensal', 'mixProdutos', 'clienteNovo', 'estoque', 'pequenosDefeitos']
+                bonus: ['metaMensal', 'mixProdutos', 'clienteNovo', 'vendaEstoque', 'pequenosDefeitos']
             },
             grandeVenda: {
                 prazo: 0,
-                bonus: ['metaMensal', 'mixProdutos', 'clienteNovo', 'estoque', 'pequenosDefeitos']
+                bonus: ['metaMensal', 'mixProdutos', 'clienteNovo', 'vendaEstoque', 'pequenosDefeitos'],
+                aumentoVenda: 1.25
             }
         };
 
-        // Event listeners para abas
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', function() {
                 const tabName = this.getAttribute('data-tab');
                 switchTab(tabName);
-                
-                // Inicializar gráfico se estiver na aba de cenários
                 if (tabName === 'cenarios') {
                     atualizarTabelaCenarios();
                     initCenarioChart();
@@ -933,21 +920,17 @@
             });
         });
 
-        // Event listeners para nível do parceiro
         document.querySelectorAll('.partner-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 document.querySelectorAll('.partner-btn').forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
                 nivelParceiro = this.getAttribute('data-level');
-                
-                // Recalcular comissão se os resultados já estiverem visíveis
                 if (document.getElementById('resultados').style.display !== 'none') {
                     calcularComissao();
                 }
             });
         });
 
-        // Event listeners para checkboxes de bônus
         document.querySelectorAll('.bonus-item input[type="checkbox"]').forEach(checkbox => {
             checkbox.addEventListener('change', function() {
                 const bonusItem = this.closest('.bonus-item');
@@ -956,30 +939,37 @@
                 } else {
                     bonusItem.classList.remove('checked');
                 }
-                
-                // Recalcular comissão se os resultados já estiverem visíveis
                 if (document.getElementById('resultados').style.display !== 'none') {
                     calcularComissao();
                 }
             });
         });
 
+        document.getElementById('valorVenda').addEventListener('change', function() {
+            valorVendaOriginal = parseFloat(this.value) || 0;
+        });
+
         function switchTab(tabName) {
-            // Remover classe active de todas as abas e conteúdos
             document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            
-            // Adicionar classe active na aba e conteúdo selecionados
             document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
             document.getElementById(tabName).classList.add('active');
         }
 
         function aplicarCenario(cenario) {
-            // Não alterar o valor da venda, apenas aplicar as condições do cenário
-            document.getElementById('prazoPagamento').value = cenarioConfig[cenario].prazo;
-            desmarcarTodosBonusExceto(cenarioConfig[cenario].bonus);
+            const config = cenarioConfig[cenario];
+            let valorVendaAtual = valorVendaOriginal;
+
+            if (config.aumentoVenda) {
+                valorVendaAtual *= config.aumentoVenda;
+                document.getElementById('valorVenda').value = valorVendaAtual.toFixed(0);
+            } else {
+                 document.getElementById('valorVenda').value = valorVendaOriginal;
+            }
+
+            document.getElementById('prazoPagamento').value = config.prazo;
+            desmarcarTodosBonusExceto(config.bonus);
             
-            // Destacar o botão do cenário selecionado
             document.querySelectorAll('.scenario-btn').forEach(btn => {
                 btn.classList.remove('active');
                 if (btn.textContent === cenarioNomeFormatado(cenario)) {
@@ -987,25 +977,19 @@
                 }
             });
             
-            // Atualizar cenário atual
             cenarioAtual = cenario;
-            
-            // Voltar para a aba do simulador
             switchTab('simulador');
             
-            // Calcular automaticamente
             setTimeout(() => {
-                calcularComissao();
+                calcularComissao(valorVendaAtual);
             }, 100);
         }
 
         function desmarcarTodosBonusExceto(manter) {
-            const checkboxes = ['metaMensal', 'mixProdutos', 'clienteNovo', 'estoque', 'pequenosDefeitos'];
-            
+            const checkboxes = ['metaMensal', 'mixProdutos', 'clienteNovo', 'vendaEstoque', 'pequenosDefeitos'];
             checkboxes.forEach(id => {
                 const checkbox = document.getElementById(id);
                 const bonusItem = checkbox.closest('.bonus-item');
-                
                 if (manter.includes(id)) {
                     checkbox.checked = true;
                     bonusItem.classList.add('checked');
@@ -1016,102 +1000,78 @@
             });
         }
 
-        function calcularComissao() {
-            const valorVenda = parseFloat(document.getElementById('valorVenda').value) || 0;
+        function calcularComissao(valorVendaOverride = null) {
+            const valorVenda = valorVendaOverride !== null ? valorVendaOverride : parseFloat(document.getElementById('valorVenda').value) || 0;
             const prazo = parseInt(document.getElementById('prazoPagamento').value) || 0;
             
-            // Comissão base por prazo
-            let comissaoBase = 10; // À vista
+            let comissaoBasePercent = 10;
             if (valorVenda <= 10000) {
                 switch(prazo) {
-                    case 30: comissaoBase = 8; break;
-                    case 60: comissaoBase = 6; break;
-                    case 90: comissaoBase = 4; break;
-                    case 120: comissaoBase = 3; break;
+                    case 30: comissaoBasePercent = 8; break;
+                    case 60: comissaoBasePercent = 6; break;
+                    case 90: comissaoBasePercent = 4; break;
+                    case 120: comissaoBasePercent = 3; break;
                 }
             }
             
-            // Ajuste do nível
-            const ajuste = ajusteNivel[nivelParceiro];
+            let bonusTotalPercent = 0;
+            const configBonusNivel = bonusConfig[nivelParceiro];
             
-            // Calcular bônus acumulativos
-            let bonusTotal = 0;
-            const config = bonusConfig[nivelParceiro];
+            if (document.getElementById('metaMensal').checked) bonusTotalPercent += configBonusNivel.metaMensal;
+            if (document.getElementById('mixProdutos').checked) bonusTotalPercent += configBonusNivel.mixProdutos;
+            if (document.getElementById('clienteNovo').checked) bonusTotalPercent += configBonusNivel.clienteNovo;
+            if (document.getElementById('vendaEstoque').checked) bonusTotalPercent += configBonusNivel.vendaEstoque;
+            if (document.getElementById('pequenosDefeitos').checked) bonusTotalPercent += configBonusNivel.pequenosDefeitos;
             
-            if (document.getElementById('metaMensal').checked) {
-                bonusTotal += config.metaMensal;
-            }
-            if (document.getElementById('mixProdutos').checked) {
-                bonusTotal += config.mixProdutos;
-            }
-            if (document.getElementById('clienteNovo').checked) {
-                bonusTotal += config.clienteNovo;
-            }
-            if (document.getElementById('estoque').checked) {
-                bonusTotal += config.estoque;
-            }
-            if (document.getElementById('pequenosDefeitos').checked) {
-                bonusTotal += config.pequenosDefeitos;
-            }
-            
-            // Comissão total
-            const comissaoTotalPercent = comissaoBase + ajuste + bonusTotal;
-            const comissaoTotalValor = (valorVenda * comissaoTotalPercent) / 100;
+            const comissaoTotalPercent = comissaoBasePercent + bonusTotalPercent;
+            const comissaoBaseValor = (valorVenda * comissaoBasePercent) / 100;
+            const bonusTotalValor = (valorVenda * bonusTotalPercent) / 100;
+            const comissaoTotalValor = comissaoBaseValor + bonusTotalValor;
             const valorCMR = valorVenda - comissaoTotalValor;
             
-            // Exibir resultados
-            document.getElementById('comissaoBase').innerHTML = `${comissaoBase.toFixed(1)}% (R$ ${(valorVenda * comissaoBase / 100).toLocaleString('pt-BR', {minimumFractionDigits: 2})})`;
-            document.getElementById('ajusteNivel').innerHTML = `${ajuste >= 0 ? '+' : ''}${ajuste.toFixed(2)}% (R$ ${ajuste >= 0 ? '+' : ''}${(valorVenda * ajuste / 100).toLocaleString('pt-BR', {minimumFractionDigits: 2})})`;
-            document.getElementById('bonusAcumulativos').innerHTML = `+${bonusTotal.toFixed(2)}% (R$ +${(valorVenda * bonusTotal / 100).toLocaleString('pt-BR', {minimumFractionDigits: 2})})`;
-            document.getElementById('comissaoTotal').innerHTML = `${comissaoTotalPercent.toFixed(2)}% (R$ ${comissaoTotalValor.toLocaleString('pt-BR', {minimumFractionDigits: 2})})`;
-            document.getElementById('valorCMR').innerHTML = `R$ ${valorCMR.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('comissaoBase').innerHTML = `${comissaoBasePercent.toFixed(2)}% (R$ ${comissaoBaseValor.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})})`;
+            document.getElementById('bonusAcumulativos').innerHTML = `+${bonusTotalPercent.toFixed(2)}% (R$ +${bonusTotalValor.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})})`;
+            document.getElementById('comissaoTotal').innerHTML = `${comissaoTotalPercent.toFixed(2)}% (R$ ${comissaoTotalValor.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})})`;
+            document.getElementById('valorCMR').innerHTML = `R$ ${valorCMR.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             
-            // Tabela de comparação
-            gerarTabelaComparacao(valorVenda, prazo);
-            
+            gerarTabelaComparacao(valorVenda, prazo, comissaoBasePercent, bonusTotalPercent);
             document.getElementById('resultados').style.display = 'block';
-            
-            // Identificar cenário atual
             identificarCenarioAtual();
             
-            // Atualizar tabela de cenários se estiver na aba de cenários
             if (document.getElementById('cenarios').classList.contains('active')) {
                 atualizarTabelaCenarios();
                 initCenarioChart();
             }
         }
 
-        function gerarTabelaComparacao(valorVenda, prazo) {
+        function gerarTabelaComparacao(valorVenda, prazo, comissaoBaseAtual, bonusTotalAtual) {
             const niveis = ['bronze', 'silver', 'gold', 'diamond'];
             const tbody = document.getElementById('tabelaComparacao');
             tbody.innerHTML = '';
+
+            const comissaoAtualNivel = (valorVenda * (comissaoBaseAtual + bonusTotalAtual)) / 100;
             
             niveis.forEach(nivel => {
-                const config = bonusConfig[nivel];
-                const ajuste = ajusteNivel[nivel];
-                
-                // Comissão base
-                let comissaoBase = 10;
+                const configBonusNivel = bonusConfig[nivel];
+                let comissaoBaseNivel = 10;
                 if (valorVenda <= 10000) {
                     switch(prazo) {
-                        case 30: comissaoBase = 8; break;
-                        case 60: comissaoBase = 6; break;
-                        case 90: comissaoBase = 4; break;
-                        case 120: comissaoBase = 3; break;
+                        case 30: comissaoBaseNivel = 8; break;
+                        case 60: comissaoBaseNivel = 6; break;
+                        case 90: comissaoBaseNivel = 4; break;
+                        case 120: comissaoBaseNivel = 3; break;
                     }
                 }
                 
-                // Bônus (assumindo todos marcados para comparação)
-                let bonusTotal = 0;
-                if (document.getElementById('metaMensal').checked) bonusTotal += config.metaMensal;
-                if (document.getElementById('mixProdutos').checked) bonusTotal += config.mixProdutos;
-                if (document.getElementById('clienteNovo').checked) bonusTotal += config.clienteNovo;
-                if (document.getElementById('estoque').checked) bonusTotal += config.estoque;
-                if (document.getElementById('pequenosDefeitos').checked) bonusTotal += config.pequenosDefeitos;
+                let bonusTotalNivel = 0;
+                if (document.getElementById('metaMensal').checked) bonusTotalNivel += configBonusNivel.metaMensal;
+                if (document.getElementById('mixProdutos').checked) bonusTotalNivel += configBonusNivel.mixProdutos;
+                if (document.getElementById('clienteNovo').checked) bonusTotalNivel += configBonusNivel.clienteNovo;
+                if (document.getElementById('vendaEstoque').checked) bonusTotalNivel += configBonusNivel.vendaEstoque;
+                if (document.getElementById('pequenosDefeitos').checked) bonusTotalNivel += configBonusNivel.pequenosDefeitos;
                 
-                const comissaoTotalPercent = comissaoBase + ajuste + bonusTotal;
-                const comissaoTotalValor = (valorVenda * comissaoTotalPercent) / 100;
-                
+                const comissaoTotalPercentNivel = comissaoBaseNivel + bonusTotalNivel;
+                const comissaoTotalValorNivel = (valorVenda * comissaoTotalPercentNivel) / 100;
                 const row = document.createElement('tr');
                 const nivelAtual = nivel === nivelParceiro;
                 
@@ -1122,19 +1082,23 @@
                 
                 const emoji = nivel === 'diamond' ? '💎' : nivel === 'gold' ? '🥇' : nivel === 'silver' ? '🥈' : '🥉';
                 const nomeNivel = nivel.charAt(0).toUpperCase() + nivel.slice(1);
+                let diferencaTexto = '-';
+                if (!nivelAtual) {
+                    const diferenca = comissaoTotalValorNivel - comissaoAtualNivel;
+                    diferencaTexto = `${diferenca >= 0 ? '+' : '-'}R$ ${Math.abs(diferenca).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                }
                 
                 row.innerHTML = `
                     <td>${emoji} ${nomeNivel}${nivelAtual ? ' (Atual)' : ''}</td>
-                    <td>R$ ${comissaoTotalValor.toLocaleString('pt-BR', {minimumFractionDigits: 2})} (${comissaoTotalPercent.toFixed(2)}%)</td>
-                    <td>${nivelAtual ? '-' : 'R$ ' + Math.abs(comissaoTotalValor - (valorVenda * (comissaoBase + ajusteNivel[nivelParceiro] + bonusTotal)) / 100).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                    <td>R$ ${comissaoTotalValorNivel.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})} (${comissaoTotalPercentNivel.toFixed(2)}%)</td>
+                    <td>${diferencaTexto}</td>
                 `;
-                
                 tbody.appendChild(row);
             });
         }
 
         function atualizarTabelaCenarios() {
-            const valorVenda = parseFloat(document.getElementById('valorVenda').value) || 0;
+            const valorVendaInput = parseFloat(document.getElementById('valorVenda').value) || 0;
             const tbody = document.getElementById('tabelaCenarios');
             tbody.innerHTML = '';
             
@@ -1146,7 +1110,6 @@
                 'otimo': 'Ótimo',
                 'grandeVenda': 'Grande Venda'
             };
-            
             const prazoTexto = {
                 0: 'À Vista',
                 30: '30 dias',
@@ -1156,69 +1119,62 @@
             };
             
             cenarios.forEach(cenario => {
-                const config = cenarioConfig[cenario];
-                const prazo = config.prazo;
+                const configCenario = cenarioConfig[cenario];
+                const prazo = configCenario.prazo;
+                let valorVendaCenario = valorVendaOriginal; // Usar valor original para cálculo base dos cenários
+
+                if (configCenario.aumentoVenda) {
+                    valorVendaCenario *= configCenario.aumentoVenda;
+                }
                 
-                // Comissão base por prazo
-                let comissaoBase = 10; // À vista
-                if (valorVenda <= 10000) {
+                let comissaoBasePercent = 10;
+                if (valorVendaCenario <= 10000) {
                     switch(prazo) {
-                        case 30: comissaoBase = 8; break;
-                        case 60: comissaoBase = 6; break;
-                        case 90: comissaoBase = 4; break;
-                        case 120: comissaoBase = 3; break;
+                        case 30: comissaoBasePercent = 8; break;
+                        case 60: comissaoBasePercent = 6; break;
+                        case 90: comissaoBasePercent = 4; break;
+                        case 120: comissaoBasePercent = 3; break;
                     }
                 }
                 
-                // Ajuste do nível
-                const ajuste = ajusteNivel[nivelParceiro];
+                const configBonusNivel = bonusConfig[nivelParceiro];
+                const metaMensalValor = configCenario.bonus.includes('metaMensal') ? (valorVendaCenario * configBonusNivel.metaMensal) / 100 : 0;
+                const mixProdutosValor = configCenario.bonus.includes('mixProdutos') ? (valorVendaCenario * configBonusNivel.mixProdutos) / 100 : 0;
+                const clienteNovoValor = configCenario.bonus.includes('clienteNovo') ? (valorVendaCenario * configBonusNivel.clienteNovo) / 100 : 0;
+                const vendaEstoqueValor = configCenario.bonus.includes('vendaEstoque') ? (valorVendaCenario * configBonusNivel.vendaEstoque) / 100 : 0;
+                const pequenosDefeitosValor = configCenario.bonus.includes('pequenosDefeitos') ? (valorVendaCenario * configBonusNivel.pequenosDefeitos) / 100 : 0;
                 
-                // Calcular valores para cada bônus
-                const bonusConfig2 = bonusConfig[nivelParceiro];
-                const metaMensalValor = config.bonus.includes('metaMensal') ? (valorVenda * bonusConfig2.metaMensal) / 100 : 0;
-                const mixProdutosValor = config.bonus.includes('mixProdutos') ? (valorVenda * bonusConfig2.mixProdutos) / 100 : 0;
-                const clienteNovoValor = config.bonus.includes('clienteNovo') ? (valorVenda * bonusConfig2.clienteNovo) / 100 : 0;
-                const estoqueValor = config.bonus.includes('estoque') ? (valorVenda * bonusConfig2.estoque) / 100 : 0;
-                const pequenosDefeitosValor = config.bonus.includes('pequenosDefeitos') ? (valorVenda * bonusConfig2.pequenosDefeitos) / 100 : 0;
+                let bonusTotalValor = metaMensalValor + mixProdutosValor + clienteNovoValor + vendaEstoqueValor + pequenosDefeitosValor;
                 
-                // Calcular bônus total
-                let bonusTotal = metaMensalValor + mixProdutosValor + clienteNovoValor + estoqueValor + pequenosDefeitosValor;
-                
-                // Comissão total
-                const comissaoBaseValor = (valorVenda * comissaoBase) / 100;
-                const ajusteValor = (valorVenda * ajuste) / 100;
-                const comissaoTotalValor = comissaoBaseValor + ajusteValor + bonusTotal;
-                const valorCMR = valorVenda - comissaoTotalValor;
+                const comissaoBaseValor = (valorVendaCenario * comissaoBasePercent) / 100;
+                const comissaoTotalValor = comissaoBaseValor + bonusTotalValor;
+                const valorCMR = valorVendaCenario - comissaoTotalValor;
                 
                 const row = document.createElement('tr');
-                
-                // Destacar cenário atual
                 if (cenario === cenarioAtual) {
                     row.classList.add('current-scenario');
                 }
                 
                 row.innerHTML = `
                     <td><strong>${cenarioNomes[cenario]}</strong></td>
+                    <td>R$ ${valorVendaCenario.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                     <td>${prazoTexto[prazo]}</td>
-                    <td>R$ ${metaMensalValor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
-                    <td>R$ ${mixProdutosValor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
-                    <td>R$ ${clienteNovoValor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
-                    <td>R$ ${estoqueValor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
-                    <td>R$ ${pequenosDefeitosValor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
-                    <td>R$ ${comissaoTotalValor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
-                    <td>R$ ${valorCMR.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                    <td>R$ ${metaMensalValor.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td>R$ ${mixProdutosValor.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td>R$ ${clienteNovoValor.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td>R$ ${vendaEstoqueValor.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td>R$ ${pequenosDefeitosValor.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td>R$ ${comissaoTotalValor.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td>R$ ${valorCMR.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                 `;
-                
                 tbody.appendChild(row);
             });
         }
 
-        // Inicializar gráfico de cenários
         function initCenarioChart() {
             const ctx = document.getElementById('cenarioChart');
-            const valorVenda = parseFloat(document.getElementById('valorVenda').value) || 0;
+            const valorVendaInput = parseFloat(document.getElementById('valorVenda').value) || 0;
             
-            // Calcular valores para cada cenário
             const dadosGrafico = {
                 labels: ['Péssimo', 'Ruim', 'Bom', 'Ótimo', 'Grande Venda'],
                 comissaoBase: [],
@@ -1229,43 +1185,40 @@
             const cenarios = ['pessimo', 'ruim', 'bom', 'otimo', 'grandeVenda'];
             
             cenarios.forEach(cenario => {
-                const config = cenarioConfig[cenario];
-                const prazo = config.prazo;
+                const configCenario = cenarioConfig[cenario];
+                const prazo = configCenario.prazo;
+                let valorVendaCenario = valorVendaOriginal; // Usar valor original para cálculo base dos cenários
+
+                if (configCenario.aumentoVenda) {
+                    valorVendaCenario *= configCenario.aumentoVenda;
+                }
                 
-                // Comissão base por prazo
-                let comissaoBase = 10; // À vista
-                if (valorVenda <= 10000) {
+                let comissaoBasePercent = 10;
+                if (valorVendaCenario <= 10000) {
                     switch(prazo) {
-                        case 30: comissaoBase = 8; break;
-                        case 60: comissaoBase = 6; break;
-                        case 90: comissaoBase = 4; break;
-                        case 120: comissaoBase = 3; break;
+                        case 30: comissaoBasePercent = 8; break;
+                        case 60: comissaoBasePercent = 6; break;
+                        case 90: comissaoBasePercent = 4; break;
+                        case 120: comissaoBasePercent = 3; break;
                     }
                 }
                 
-                // Ajuste do nível
-                const ajuste = ajusteNivel[nivelParceiro];
+                let bonusTotalPercent = 0;
+                const configBonusNivel = bonusConfig[nivelParceiro];
                 
-                // Calcular bônus acumulativos
-                let bonusTotal = 0;
-                const bonusConfig2 = bonusConfig[nivelParceiro];
-                
-                config.bonus.forEach(bonus => {
-                    bonusTotal += bonusConfig2[bonus];
+                configCenario.bonus.forEach(bonus => {
+                    bonusTotalPercent += configBonusNivel[bonus];
                 });
                 
-                // Comissão total
-                const comissaoBaseValor = (valorVenda * comissaoBase) / 100;
-                const ajusteValor = (valorVenda * ajuste) / 100;
-                const bonusValor = (valorVenda * bonusTotal) / 100;
-                const valorCMR = valorVenda - comissaoBaseValor - ajusteValor - bonusValor;
+                const comissaoBaseValor = (valorVendaCenario * comissaoBasePercent) / 100;
+                const bonusValor = (valorVendaCenario * bonusTotalPercent) / 100;
+                const valorCMR = valorVendaCenario - comissaoBaseValor - bonusValor;
                 
                 dadosGrafico.comissaoBase.push(comissaoBaseValor);
                 dadosGrafico.bonus.push(bonusValor);
                 dadosGrafico.valorCMR.push(valorCMR);
             });
             
-            // Verificar se o gráfico já existe e destruí-lo
             if (chartInstance) {
                 chartInstance.destroy();
             }
@@ -1288,9 +1241,12 @@
                         {
                             label: 'Valor Final CMR',
                             data: dadosGrafico.valorCMR,
-                            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
                             type: 'line',
-                            yAxisID: 'y1'
+                            yAxisID: 'y1',
+                            fill: false,
+                            tension: 0.1
                         }
                     ]
                 },
@@ -1345,10 +1301,9 @@
             if (document.getElementById('metaMensal').checked) bonusAtivos.push('metaMensal');
             if (document.getElementById('mixProdutos').checked) bonusAtivos.push('mixProdutos');
             if (document.getElementById('clienteNovo').checked) bonusAtivos.push('clienteNovo');
-            if (document.getElementById('estoque').checked) bonusAtivos.push('estoque');
+            if (document.getElementById('vendaEstoque').checked) bonusAtivos.push('vendaEstoque');
             if (document.getElementById('pequenosDefeitos').checked) bonusAtivos.push('pequenosDefeitos');
             
-            // Calcular pontuação de similaridade para cada cenário
             const cenarios = ['pessimo', 'ruim', 'bom', 'otimo', 'grandeVenda'];
             let melhorCenario = '';
             let melhorPontuacao = -1;
@@ -1357,11 +1312,9 @@
                 const config = cenarioConfig[cenario];
                 let pontuacao = 0;
                 
-                // Pontos para prazo igual
                 if (prazo === config.prazo) {
                     pontuacao += 10;
                 } else {
-                    // Pontos parciais baseados na proximidade do prazo
                     const prazos = [0, 30, 60, 90, 120];
                     const indexAtual = prazos.indexOf(prazo);
                     const indexCenario = prazos.indexOf(config.prazo);
@@ -1370,14 +1323,12 @@
                     }
                 }
                 
-                // Pontos para bônus iguais
                 config.bonus.forEach(bonus => {
                     if (bonusAtivos.includes(bonus)) {
                         pontuacao += 2;
                     }
                 });
                 
-                // Penalidade para bônus extras ou faltantes
                 const bonusExtras = bonusAtivos.filter(b => !config.bonus.includes(b)).length;
                 const bonusFaltantes = config.bonus.filter(b => !bonusAtivos.includes(b)).length;
                 pontuacao -= (bonusExtras + bonusFaltantes) * 1;
@@ -1388,7 +1339,6 @@
                 }
             });
             
-            // Atualizar indicador de cenário atual
             if (melhorCenario) {
                 cenarioAtual = melhorCenario;
                 const cenarioNome = cenarioNomeFormatado(melhorCenario);
@@ -1397,7 +1347,6 @@
                 document.getElementById('current-scenario-indicator').style.display = 'block';
                 document.getElementById('current-scenario-indicator-tab').style.display = 'block';
                 
-                // Destacar botão do cenário atual
                 document.querySelectorAll('.scenario-btn').forEach(btn => {
                     btn.classList.remove('active');
                     if (btn.textContent === cenarioNome) {
@@ -1418,15 +1367,12 @@
             return nomes[cenario] || cenario;
         }
 
-        // Inicializar
         document.addEventListener('DOMContentLoaded', function() {
-            // Marcar todos os checkboxes como checked por padrão
             document.querySelectorAll('.bonus-item input[type="checkbox"]').forEach(checkbox => {
                 checkbox.checked = true;
                 checkbox.closest('.bonus-item').classList.add('checked');
             });
-            
-            // Calcular comissão inicial
+            valorVendaOriginal = parseFloat(document.getElementById('valorVenda').value) || 0;
             calcularComissao();
         });
     </script>
